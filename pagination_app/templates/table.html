@@ -1,0 +1,152 @@
+{% block title %} user-management {% endblock title %}
+
+{% block content %}
+
+<!-- Header -->
+<div class="header bg-theme-light pb-9">
+    <div class="container-fluid">
+        <div class="header-body">
+            <div class="headnumText justify-content-between">
+                <div class="pageTitleWrap">
+                    <h5>User List</h5>
+                    <p>Lorem ipsum is placeholder text commonly used</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Page content -->
+<div class="container-fluid mt--9">
+    <div class="card hptCard mt-1">
+        <div class="table-responsive">
+            <table class="table align-items-center table-flush">
+                <thead class="thead-light">
+                <tr>
+                    <th scope="col" class="sort" data-sort="name">SNo</th>
+                    <th scope="col" class="sort" data-sort="details">User</th>
+                    <th scope="col" class="sort" data-sort="employeeId">Role</th>
+                    <th scope="col">Created Date</th>
+                    <th scope="col" class="sort" data-sort="dishaCluster">Last Login</th>
+                    <th>Status</th>
+                    <th>Action</th>
+                </tr>
+                </thead>
+                <tbody class="list">
+                {% for items in user_data %}
+                <tr>
+                    <td>{{items.id}}</td>
+                    <td>
+                        <div class="userDetail">
+                            <div class="img"><img src="/static/assets/img/theme/team-1.jpg"/></div>
+                            <div class="cont">
+                                <div class="name">{{items.full_name}}</div>
+                                <div class="email">{{items.email}}</div>
+                            </div>
+                        </div>
+                    </td>
+                    <td>{{items.designation}}</td>
+                    <td>{{items.date_joined | date:"d/m/Y"}}</td>
+                    <td>{{items.last_login | date:"d/m/Y"}}</td>
+                    {% if items.is_active == True %}
+                    <td><a href="#" class="action-badge badge-approved">Active</a></td>
+                    {% else %}
+                    <td><a href="#" class="action-badge badge-progress">In - Active</a></td>
+                    {% endif %}
+                    <td class="text-right">
+                        <div class="actionBtn-wrap">
+                            <button type="button" class="btn btn-info btn-sm view-user-btn" data-toggle="modal"
+                                    data-target="#userView" data-user-id="{{ items.id }}"
+                                    style="color: black; background: none; border: none; box-shadow: none;"><i
+                                    class="icon-eye"></i></button>
+                            <a href=""><i class="icon-delete"></i></a>
+                            <div class="dropdown">
+                                <a class="btn btn-sm btn-icon-only" href="#" role="button" data-toggle="dropdown"
+                                   aria-haspopup="true" aria-expanded="false">
+                                    <i class="fas fa-ellipsis-v"></i>
+                                </a>
+                                <div class="dropdown-menu dropdown-menu-right dropdown-menu-arrow">
+                                    <a class="dropdown-item" href="">Edit</a>
+                                    <a class="dropdown-item" href="">Active</a>
+                                    <a class="dropdown-item"
+                                       href="">In-active</a>
+                                </div>
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+
+        <!-- Card footer -->
+        <div class="card-footer d-flex align-items-center justify-content-between">
+            <div class="showFilter">
+                <label>Show</label>
+                <select id="items-per-page" onchange="updatePerPage()">
+                    <option value="10" {% if per_page == 10 %}selected{% endif %}>10</option>
+                    <option value="20" {% if per_page == 20 %}selected{% endif %}>20</option>
+                    <option value="30" {% if per_page == 30 %}selected{% endif %}>30</option>
+                </select>
+            </div>
+
+            <!-- Card footer -->
+            <nav aria-label="...">
+                <ul class="pagination justify-content-end mb-0">
+                    {% if user_data.has_previous %}
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ user_data.previous_page_number }}&per_page={{ per_page }}"
+                           tabindex="-1">Previous</a>
+                    </li>
+                    {% else %}
+                    <li class="page-item disabled">
+                        <a class="page-link" href="#" tabindex="-1">Previous</a>
+                    </li>
+                    {% endif %}
+
+                    {% for num in user_data.paginator.page_range %}
+                    {% if user_data.number == num %}
+                    <li class="page-item active">
+                        <a class="page-link" href="#">{{ num }} <span class="sr-only">(current)</span>
+                        </a>
+                    </li>
+                    {% else %}
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ num }}&per_page={{ per_page }}">{{ num }}
+                        </a>
+                    </li>
+                    {% endif %}
+                    {% endfor %}
+
+                    {% if user_data.has_next %}
+                    <li class="page-item">
+                        <a class="page-link"
+                           href="?page={{ user_data.next_page_number }}&per_page={{ per_page }}">Next</a>
+                    </li>
+                    {% else %}
+                    <li class="page-item disabled">
+                        <a class="page-link" href="#">Next</a>
+                    </li>
+                    {% endif %}
+                </ul>
+            </nav>
+        </div>
+    </div>
+{% include "footer.html" %}
+
+</div>
+
+{% endblock content %}
+
+<!-- Specific JS goes HERE -->
+{% block javascripts %}
+
+<script>
+    // Script for Table
+        function updatePerPage() {
+            var perPage = document.getElementById('items-per-page').value;
+            window.location.href = '?page=1&per_page=' + perPage;
+        }
+</script>
+{% endblock javascripts %}

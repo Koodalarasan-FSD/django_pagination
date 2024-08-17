@@ -1,7 +1,6 @@
 from django.shortcuts import render
 from .models import UserRegistration
-from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
-
+from django.core.paginator import Paginator
 
 # Create your views here.
 def index(request):
